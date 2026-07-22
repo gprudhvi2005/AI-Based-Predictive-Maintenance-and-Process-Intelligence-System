@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import joblib
+import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
 
@@ -51,9 +53,43 @@ print(classification_report(y_test, y_pred_custom, zero_division=0))
 # ==========================================
 results_df = pd.DataFrame({
     'Actual Label': y_test,
-    'Predicted Label': y_pred_custom,
+    'Predicted Label': y_pred,  # <---  standard 0.5 threshold here
     'Failure Risk (%)': np.round(y_proba * 100, 2)
 })
 
 print("\n=== Top 10 Highest Risk Predictions ===")
 print(results_df.sort_values(by='Failure Risk (%)', ascending=False).head(10).to_string(index=False))
+
+# ==========================================
+# 7. ADDITION: Save Trained Model Artifacts
+# ==========================================
+joblib.dump(model, 'Milestone_1/logistic_regression_model.pkl')
+print("\n[SUCCESS] Saved model to 'Milestone_1/logistic_regression_model.pkl'")
+
+# ==========================================
+# 8. ADDITION: Feature Importance (Odds Ratios)
+# ==========================================
+feature_names = X_train_scaled.columns
+odds_ratios = np.exp(model.coef_[0])
+
+importance_df = pd.DataFrame({
+    'Feature': feature_names,
+    'Odds Ratio': odds_ratios
+}).sort_values(by='Odds Ratio', ascending=True)
+
+print("\n=== Feature Importance (Odds Ratios) ===")
+print(importance_df.sort_values(by='Odds Ratio', ascending=False).to_string(index=False))
+
+# Plot Feature Importance
+plt.figure(figsize=(8, 5))
+plt.barh(importance_df['Feature'], importance_df['Odds Ratio'], color='skyblue')
+plt.axvline(x=1.0, color='red', linestyle='--', label='Baseline Risk (Odds Ratio = 1.0)')
+plt.xlabel('Odds Ratio (Impact on Failure Probability)')
+plt.title('Logistic Regression - Feature Importance')
+plt.legend()
+plt.tight_layout()
+
+# Save plot asset for project documentation
+plt.savefig('Milestone_1/feature_importance.png')
+print("[SUCCESS] Saved plot to 'Milestone_1/feature_importance.png'")
+plt.show()
