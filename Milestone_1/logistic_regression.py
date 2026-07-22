@@ -6,11 +6,10 @@ from sklearn.metrics import classification_report, confusion_matrix, roc_auc_sco
 # ==========================================
 # 1. Load Preprocessed Datasets
 # ==========================================
-# Read the CSV files saved in your Milestone_1 directory
-X_train_scaled = pd.read_csv('X_train_scaled.csv')
-X_test_scaled = pd.read_csv('X_test_scaled.csv')
-y_train = pd.read_csv('y_train.csv').values.ravel()
-y_test = pd.read_csv('y_test.csv').values.ravel()
+X_train_scaled = pd.read_csv('Milestone_1/X_train_scaled.csv')
+X_test_scaled  = pd.read_csv('Milestone_1/X_test_scaled.csv')
+y_train        = pd.read_csv('Milestone_1/y_train.csv').values.ravel()
+y_test         = pd.read_csv('Milestone_1/y_test.csv').values.ravel()
 
 # ==========================================
 # 2. Initialize Model & Fit on Training Data
